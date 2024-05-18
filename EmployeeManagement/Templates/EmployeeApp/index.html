@@ -1,0 +1,86 @@
+{% extends 'Partials/_base.html' %} 
+
+{% load static %}
+
+{% block title %}
+<title>Employee Overview</title>
+{% endblock title %} 
+
+{% block cssfiles %} 
+<link rel="stylesheet" href="{% static 'EmployeeApp/css/EmployeeApp.css' %}">
+{% endblock cssfiles %} 
+
+{% block body %} 
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">Responsive Table</h2>
+    <div class="table-responsive">
+      <table class="table table-bordered table-striped">
+        <thead class="thead-dark">
+          <tr>
+            <th>ID</th>
+            <th>First Name</th>
+            <th>Last Name</th>
+            <th>Email</th>
+            <th>Position</th>
+            <th>Salary</th>
+            <th>Date Hired</th>
+          </tr>
+        </thead>
+        <tbody id="tableBody">
+            {% for row in data %}
+            <tr>
+                <td>{{ row.id }}</td>
+                <td>{{ row.first_name }}</td>
+                <td>{{ row.last_name }}</td>
+                <td>{{ row.email }}</td>
+                <td>{{ row.position }}</td>
+                <td>{{ row.salary }}</td>
+                <td>{{ row.date_hired }}</td>
+            <tr>
+            {% endfor %}            
+        </tbody>
+      </table>
+    </div>
+    <div id="paginationDivContainer">
+        <form>
+           {% csrf_token %} 
+            <div id="paginationDiv" class="row">
+
+            <button class="btn btn-dark btn-sm pgnbtn col-md-1 col-lg-1" data-value="1">First</button>
+
+            {% for i in pageInfo.pageRange %}
+              
+              {% if pageInfo.currentpageNo == i %}
+                <button class="btn btn-dark btn-sm pgnbtn disabled col-md-1 col-lg-1">{{ i }}</button>
+    
+              {% else %}
+                  <button class="btn btn-dark btn-sm pgnbtn col-md-1 col-lg-1" data-value="{{ i }}" >{{ i }}</button>
+              {% endif %}
+
+            {% endfor %}
+        
+            <button id="test" class="btn btn-dark btn-sm pgnbtn col-md-1 col-lg-1" data-value="{{ pageInfo.lastPageNo }}">Last</button>
+            
+            </div>
+
+        </form>
+    </div>
+
+  </div>
+  
+
+
+{% endblock body %} 
+
+
+{% block jsfiles %} 
+
+<script>
+  
+</script>
+
+<script src="{% static 'EmployeeApp/js/script.js' %}"></script>
+
+{% endblock jsfiles %}
