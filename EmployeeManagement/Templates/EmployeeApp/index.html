@@ -5,87 +5,11 @@
 {% endblock cssfiles %} {% block body %}
 
 <div class="container mt-5">
-  <h2 class="mb-4">Responsive Table</h2>
-  <div class="table-responsive table-wrapper">
-    <table class="table table-bordered table-striped">
-      <thead class="thead-dark">
-        <tr>
-          <th>ID</th>
-          <th>First Name</th>
-          <th>Last Name</th>
-          <th>Email</th>
-          <th>Position</th>
-          <th>Salary</th>
-          <th>Hired On</th>
-        </tr>
-      </thead>
-      <tbody id="tableBody">
-        {% for row in OverviewData.Table %}
-        <tr>
-          <td>{{ row.ID }}</td>
-          <td>{{ row.first_name }}</td>
-          <td>{{ row.last_name }}</td>
-          <td>{{ row.email }}</td>
-          <td>{{ row.position }}</td>
-          <td>{{ row.salary }}</td>
-          <td>{{ row.date_hired }}</td>
-        </tr>
 
-        <tr>
-          {% endfor %}
-        </tr>
-      </tbody>
-    </table>
-  </div>
-  <div id="paginationDivContainer" class="my-3">
-    <form>
-      {% csrf_token %}
-      <div class="row">
-        <div id="paginationDiv" class="col-md-9 col-lg-9">
-          <button
-            class="btn btn-dark btn-sm pgnbtn
-            {% if OverviewData.CurrenPageNo == 1 %} disabled {% endif %}
-            col-md-1 col-lg-1"
-            data-value="1"
-          >
-            First
-          </button>
+  <h2 class="mb-4">Employee Overview</h2>
 
-          {% for i in OverviewData.PageRange %}
-          <button class="btn btn-dark btn-sm pgnbtn  {% if OverviewData.CurrenPageNo == i %} disabled {% endif %} col-md-1 col-lg-1" data-value="{{i}}">
-            {{ i }}
-          </button>
+  {% include 'Pagination\DataTableOverview.html' %}
 
-          {% endfor %}
-          
-          {% if OverviewData.IsLastPageNo %}
-          <button
-            id="test"
-            class="btn btn-dark btn-sm 
-            {% if OverviewData.CurrenPageNo == OverviewData.LastPageNo %} disabled {% endif %}
-            pgnbtn col-md-1 col-lg-1"
-            data-value="{{ OverviewData.LastPageNo }}"
-          >
-            Last
-          </button>
-          {% endif %}
-        </div>
-        
-        <span class="col-md-1 col-lg-1 my-2">Total : {{ OverviewData.TotalRecordCount }}</span>
-        
-        <div class="col-md-1 col-lg-1">
-          <select class="form-control" id="pageSize">
-            <option value="10">10</option>
-            <option value="25">25</option>
-            <option value="50">50</option>
-            <option value="500">500</option>
-            <option value="1000">1000</option>          
-          </select>
-        </div>
-
-      </div>
-    </form>
-  </div>
 </div>
 
 {% endblock body %} {% block jsfiles %}

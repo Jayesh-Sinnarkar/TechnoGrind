@@ -10,7 +10,8 @@ class OverviewModel:
                  PageRange = None,
                  StartPaginationNo = None,
                  EndPaginationNo = None,
-                 TotalRecordCount = None
+                 TotalRecordCount = None,
+                 Columns = None
                  ):
 
         self.IsFirstPageNo = IsFirstPageNo if IsFirstPageNo is not None else False      
@@ -23,7 +24,8 @@ class OverviewModel:
         self.StartPaginationNo = StartPaginationNo if StartPaginationNo is not None else 1
         self.EndPaginationNo = EndPaginationNo if EndPaginationNo is not None else 1
         self.TotalRecordCount = TotalRecordCount if TotalRecordCount is not None else 0    
-    
+        self.Columns = Columns if Columns is not None else []
+        
     def GetPaginationInfo(self):
         return  {
             "IsFirstPageNo" : self.IsFirstPageNo,
@@ -36,6 +38,7 @@ class OverviewModel:
             "StartPaginationNo" : self.StartPaginationNo,
             "EndPaginationNo" : self.EndPaginationNo,
             "TotalRecordCount" : self.TotalRecordCount,
+            "Columns" : self.Columns
         }
     
             

@@ -35,14 +35,14 @@ def GetPageInfo(totalRecordsCount, pageSize, currentpageNo):
     return pageInfo    
 
 def Overview(request):    
-
-
     if request.method == "GET":
         pageNo = 1
         pageSize = 10
 
         query = f"CALL GetEmployeesByPage({pageNo}, {pageSize});"        
         success, result = dbHelper.SelectQueryListDict(query)
+        
+        columns = list(result[0].keys())
         
         totalRecordsCount = Employee.objects.count()
 
@@ -56,7 +56,8 @@ def Overview(request):
         Table=result,
         PageSize=pageSize,
         PageRange=pageInfo["pageRange"],
-        TotalRecordCount=totalRecordsCount
+        TotalRecordCount=totalRecordsCount,
+        Columns=columns
         )
         
         OverviewData = overviewModel.GetPaginationInfo()
@@ -73,6 +74,8 @@ def Overview(request):
         
         success, result = dbHelper.SelectQueryListDict(query)
         
+        columns = list(result[0].keys())
+        
         totalRecordsCount = Employee.objects.count()
         
         pageInfo = GetPageInfo(totalRecordsCount, pageSize, pageNo)
@@ -86,7 +89,8 @@ def Overview(request):
         PageSize=pageSize,
         StartPaginationNo=pageInfo["startPaginationNo"],
         EndPaginationNo=pageInfo["endPaginationNo"],
-        TotalRecordCount=totalRecordsCount
+        TotalRecordCount=totalRecordsCount,
+        Columns=columns
         )
         
         OverviewData = overviewModel.GetPaginationInfo()
