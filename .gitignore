@@ -1,0 +1,27 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Django stuff:
+*.log
+*.pot
+*.pyc
+*.pyo
+*.sqlite3
+*.pdb
+*.pyo
+*.coverage
+.coverage.*
+.cache
+*.mo
+*.pot
+db.sqlite3
+instance/
+.webassets-cache
+
+# Pycharm
+.idea/
+
+# VSCode
+.vscode/
