@@ -20,7 +20,7 @@
         </tr>
       </thead>
       <tbody id="tableBody">
-        {% for row in data %}
+        {% for row in OverviewData.Table %}
         <tr>
           <td>{{ row.ID }}</td>
           <td>{{ row.first_name }}</td>
@@ -41,31 +41,40 @@
     <form>
       {% csrf_token %}
       <div class="row">
-        <div  id="paginationDiv" class="col-md-10 col-lg-10">
+        <div id="paginationDiv" class="col-md-9 col-lg-9">
           <button
-            class="btn btn-dark btn-sm pgnbtn col-md-1 col-lg-1"
+            class="btn btn-dark btn-sm pgnbtn
+            {% if OverviewData.CurrenPageNo == 1 %} disabled {% endif %}
+            col-md-1 col-lg-1"
             data-value="1"
           >
             First
           </button>
 
-          {% for i in pageInfo.pageRange %}
-          <button class="btn btn-dark btn-sm pgnbtn  {% if pageInfo.currentpageNo == i %} disabled {% endif %} col-md-1 col-lg-1" data-value="{{i}}">
+          {% for i in OverviewData.PageRange %}
+          <button class="btn btn-dark btn-sm pgnbtn  {% if OverviewData.CurrenPageNo == i %} disabled {% endif %} col-md-1 col-lg-1" data-value="{{i}}">
             {{ i }}
           </button>
 
           {% endfor %}
-
+          
+          {% if OverviewData.IsLastPageNo %}
           <button
             id="test"
-            class="btn btn-dark btn-sm pgnbtn col-md-1 col-lg-1"
-            data-value="{{ pageInfo.lastPageNo }}"
+            class="btn btn-dark btn-sm 
+            {% if OverviewData.CurrenPageNo == OverviewData.LastPageNo %} disabled {% endif %}
+            pgnbtn col-md-1 col-lg-1"
+            data-value="{{ OverviewData.LastPageNo }}"
           >
             Last
           </button>
+          {% endif %}
         </div>
-        <div class="col-md-2 col-lg-2">
-          <select class="select" id="pageSize" onchange="OnPageSizeChange()">
+        
+        <span class="col-md-1 col-lg-1 my-2">Total : {{ OverviewData.TotalRecordCount }}</span>
+        
+        <div class="col-md-1 col-lg-1">
+          <select class="form-control" id="pageSize">
             <option value="10">10</option>
             <option value="25">25</option>
             <option value="50">50</option>
@@ -73,6 +82,7 @@
             <option value="1000">1000</option>          
           </select>
         </div>
+
       </div>
     </form>
   </div>

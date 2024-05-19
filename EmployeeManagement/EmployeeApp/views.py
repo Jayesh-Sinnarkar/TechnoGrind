@@ -3,83 +3,68 @@ import pdb
 from .models import Employee
 from Helper import DatabaseHelper as dbHelper
 from django.http import JsonResponse
+from PaginationModels.OverviewModel import OverviewModel
 
-
-def GetPageInfo(totalPageCount, pageSize, currentpageNo):
-    totalPages = totalPageCount//pageSize
+def GetPageInfo(totalRecordsCount, pageSize, currentpageNo):
+    
+    totalPages = totalRecordsCount//pageSize
     firstPageNo = 1
-    startPageNo = 1
-    endPageNo = totalPages
+    startPaginationNo = 1
+    endPaginationNo = totalPages
     lastPageNo = totalPages 
     
-    if (currentpageNo-2) > 0:
-        startPageNo = currentpageNo-2
+    if (currentpageNo-1) > 0:
+        startPaginationNo = currentpageNo-1
     
-    if currentpageNo + 2 < totalPages:
-        endPageNo = currentpageNo + 2        
+    if currentpageNo + 1 <= totalPages:
+        endPaginationNo = currentpageNo + 2        
 
-    pageRange = range(startPageNo, endPageNo + 1)
+    pageRange = range(startPaginationNo, endPaginationNo)
 
     pageInfo = {
         "firstPageNo" : firstPageNo,
         "pageRange": pageRange,
+        "startPaginationNo": startPaginationNo,
+        "endPaginationNo": endPaginationNo,
+        "isLastPage" : lastPageNo > 0, 
         "lastPageNo": lastPageNo,
-        "currentpageNo" : currentpageNo
+        "currentpageNo" : currentpageNo,
+        "totalRecordsCount" : totalRecordsCount
     }
     
-    return pageInfo
-
-def GetPageInfoJS(totalPageCount, pageSize, currentpageNo):
-    totalPages = totalPageCount//pageSize
-    firstPageNo = 1
-    startPageNo = 1
-    endPageNo = totalPages
-    lastPageNo = totalPages 
-    
-    if (currentpageNo-2) > 0:
-        startPageNo = currentpageNo-2
-    
-    if currentpageNo + 2 < totalPages:
-        endPageNo = currentpageNo + 2        
-
-    pageInfo = {
-        "firstPageNo" : firstPageNo,
-        "startPageNo": startPageNo,
-        "endPageNo": endPageNo + 1,
-        "lastPageNo": lastPageNo,
-        "currentpageNo" : currentpageNo
-    }
-    
-    return pageInfo
-
-
-    
+    return pageInfo    
 
 def Overview(request):    
 
 
     if request.method == "GET":
-        pageSize = 10
         pageNo = 1
-        
-        query = f"CALL GetEmployeesByPage({pageNo}, {pageSize});"
-        
+        pageSize = 10
+
+        query = f"CALL GetEmployeesByPage({pageNo}, {pageSize});"        
         success, result = dbHelper.SelectQueryListDict(query)
         
-        totalPages = Employee.objects.count()
-        
-        pageInfo = GetPageInfo(totalPages, pageSize, pageNo)
+        totalRecordsCount = Employee.objects.count()
 
+        pageInfo = GetPageInfo(totalRecordsCount, pageSize, pageNo)
+
+        overviewModel = OverviewModel(
+        IsFirstPageNo=totalRecordsCount>0,
+        CurrenPageNo=pageNo,
+        IsLastPageNo=pageInfo["isLastPage"],
+        LastPageNo=pageInfo["lastPageNo"],
+        Table=result,
+        PageSize=pageSize,
+        PageRange=pageInfo["pageRange"],
+        TotalRecordCount=totalRecordsCount
+        )
+        
+        OverviewData = overviewModel.GetPaginationInfo()
+        
         if success:
-            context = {'data': result}
             return render(request, template_name="EmployeeApp/index.html", context={
-                'data':result,
-                'pageInfo': pageInfo
+                'OverviewData':OverviewData,
             })    
-        else:
-            return render(request, template_name="EmployeeApp/index.html", context={
-            'data':[{}]
-            })
     else:
         pageNo = int(request.POST["pageNo"])
         pageSize = int(request.POST["pageSize"])
@@ -88,30 +73,27 @@ def Overview(request):
         
         success, result = dbHelper.SelectQueryListDict(query)
         
-        totalPages = Employee.objects.count()
+        totalRecordsCount = Employee.objects.count()
         
-        pageInfo = GetPageInfo(totalPages, pageSize, pageNo)
+        pageInfo = GetPageInfo(totalRecordsCount, pageSize, pageNo)
         
-        totalPages = totalPages//pageSize
-        firstPageNo = 1
-        startPageNo = 1
-        endPageNo = totalPages
-        lastPageNo = totalPages 
+        overviewModel = OverviewModel(
+        IsFirstPageNo=totalRecordsCount>0,
+        CurrenPageNo=pageNo,
+        IsLastPageNo=pageInfo["isLastPage"],
+        LastPageNo=pageInfo["lastPageNo"],
+        Table=result,
+        PageSize=pageSize,
+        StartPaginationNo=pageInfo["startPaginationNo"],
+        EndPaginationNo=pageInfo["endPaginationNo"],
+        TotalRecordCount=totalRecordsCount
+        )
         
-        if (pageNo-2) > 0:
-            startPageNo = pageNo-2
-        
-        if pageNo + 2 < totalPages:
-            endPageNo = pageNo + 2        
+        OverviewData = overviewModel.GetPaginationInfo()
         
         return JsonResponse({
             "status": success,
-            "data" : result,
-            "firstPageNo" : firstPageNo,
-            "startPageNo": startPageNo,
-            "endPageNo": endPageNo + 1,
-            "lastPageNo": lastPageNo,
-            "currentpageNo" : pageNo
+            "OverviewData" : OverviewData
         })
 
     

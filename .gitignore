@@ -25,3 +25,7 @@ instance/
 
 # VSCode
 .vscode/
+
+
+#Project Files
+settings.py
