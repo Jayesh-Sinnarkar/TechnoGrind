@@ -1,3 +1,16 @@
 .btn.pgnbtn{
     margin:0 0.5em !important;
 }
+
+.table thead th {
+    position: sticky;
+    top: 0;
+    color: white;
+    background-color: rgb(30, 29, 29);
+    z-index: 1; /* Ensure the header is above the table rows */
+}
+
+.table-wrapper{
+    height: 400px; /* Set your desired height here */
+    overflow-y: auto;
+}

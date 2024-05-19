@@ -57,8 +57,9 @@ def GetPageInfoJS(totalPageCount, pageSize, currentpageNo):
 
 def Overview(request):    
 
+
     if request.method == "GET":
-        pageSize = 5
+        pageSize = 10
         pageNo = 1
         
         query = f"CALL GetEmployeesByPage({pageNo}, {pageSize});"
@@ -80,9 +81,8 @@ def Overview(request):
             'data':[{}]
             })
     else:
-        pageSize = 5
-    
         pageNo = int(request.POST["pageNo"])
+        pageSize = int(request.POST["pageSize"])
 
         query = f"CALL GetEmployeesByPage({pageNo}, {pageSize});"
         
